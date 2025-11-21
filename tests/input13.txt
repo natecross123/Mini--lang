@@ -1,0 +1,5 @@
+fun f(x) = if x < 5: 2 elif x > 10: 12 else 8 end;
+f(7);
+
+
+

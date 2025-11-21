@@ -1,0 +1,16 @@
+import lib3652.util.VisitException;
+
+/**
+ * Class to represent a runtime exception, which should be the parent of all
+ * exceptions that might arise because of visits done by an Evaluator instance.
+ */
+public class RuntimeException extends VisitException {
+
+    public RuntimeException(String msg) {
+	super(msg);
+    }
+
+    public RuntimeException(String msg, Throwable cause) {
+	super(msg, cause);
+    }
+}
