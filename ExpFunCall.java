@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import lib3652.util.VisitException;
 
 /**
  * IR Class to represent a function call
@@ -6,9 +7,7 @@ import java.util.ArrayList;
 public class ExpFunCall extends Exp {
     private String name;
     
-    // Implement this class
- 
-   public ExpFunCall(String name, ArrayList<Exp> args) {
+    public ExpFunCall(String name, ArrayList<Exp> args) {
         super("call", args);
         this.name = name;
     }
@@ -23,6 +22,4 @@ public class ExpFunCall extends Exp {
     public String toString() {
         return name + "(...)";
     }
-    
 }
-

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import lib3652.util.VisitException;
 
 /**
  * IR Class to represent a function definition
@@ -6,13 +7,19 @@ import java.util.ArrayList;
 public class StmtFunDefn extends Statement {
     private String name;
     private ArrayList<String> params;
-
+    
     public StmtFunDefn(String name, ArrayList<String> params, Exp body) {
         super("funDef", body);
         this.name = name;
         this.params = params;
     }
-     
+    
+    public StmtFunDefn(String name, ArrayList<String> params, StmtSequence body) {
+        super("funDef", body);
+        this.name = name;
+        this.params = params;
+    }
+    
     public String getName() { return name; }
     public ArrayList<String> getParams() { return params; }
     public Exp getBody() { return getSubTree(0); }
@@ -25,5 +32,3 @@ public class StmtFunDefn extends Statement {
         return "fun " + name + "(" + String.join(", ", params) + ") = ...";
     }
 }
-
-

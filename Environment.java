@@ -6,7 +6,7 @@ import java.util.*;
  * It supports storing and retrieving bindings, just as would
  * be expected in any dictionary.
  *
- * @author <a href="mailto:dcoore@uwimona.edu.jm">Daniel Coore</a>
+ * @author <a href="mailto:daniel.coore@uwimona.edu.jm">Daniel Coore</a>
  * @version 1.0
  */
 public class Environment<T> {
@@ -22,7 +22,7 @@ public class Environment<T> {
     public Environment() {
 	parent = null;
 	dictionary = new HashMap<>();
-    functions = new HashMap<>();
+	functions = new HashMap<>();
     }
 
     /**
@@ -38,7 +38,7 @@ public class Environment<T> {
     public Environment(Environment<T> parent, String[] ids, T[] values) {
 	this.parent = parent;
 	dictionary = new HashMap<>();
-    functions = new HashMap<>();
+	functions = new HashMap<>();
 	for (int i = 0; i < ids.length; i++) {
 	    dictionary.put(ids[i], values[i]);
 	}
@@ -58,7 +58,7 @@ public class Environment<T> {
 		       ArrayList<T> values) {
 	this.parent = parent;
 	dictionary = new HashMap<>();
-    functions = new HashMap<>();
+	functions = new HashMap<>();
 	for (int i = 0; i < ids.size(); i++) {
 	    dictionary.put(ids.get(i), values.get(i));
 	}
@@ -107,11 +107,16 @@ public class Environment<T> {
 	    return result;
     }
 
-     public void putFunction(String name, Closure<T> closure) {
+    /**
+     * Store a function closure in the environment
+     */
+    public void putFunction(String name, Closure<T> closure) {
 	functions.put(name, closure);
     }
 
- 
+    /**
+     * Retrieve a function closure from the environment
+     */
     public Closure<T> getFunction(String name) throws UnboundVarException {
 	Closure<T> result = functions.get(name);
 	if (result == null) {
@@ -123,7 +128,7 @@ public class Environment<T> {
 	return result;
     }
 
-    /** 
+    /**
      * Create a string representation of this environment.
      *
      * @return a string of all the names bound in this
@@ -137,8 +142,6 @@ public class Environment<T> {
 	    result = result.append(iter.next().toString());
 	}
 	return result.toString();
-    }  
+    }
 
 }
-
-

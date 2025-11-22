@@ -1,4 +1,5 @@
 import java.util.*;
+import lib3652.util.ASTVisitor;
 import lib3652.util.VisitException;
 
 public class Evaluator implements Visitor<Environment<Double>, Double> {
@@ -80,7 +81,7 @@ public class Evaluator implements Visitor<Environment<Double>, Double> {
 	ArrayList<Double> argVals = new ArrayList<>();
 	for (Exp arg : fc.getArgs()) {
 	    argVals.add(arg.visit(this, env));
-	
+	}
 	Environment<Double> localEnv = new Environment<>(
 	    closure.getClosingEnv(),
 	    function.getParams(),
@@ -138,4 +139,33 @@ public class Evaluator implements Visitor<Environment<Double>, Double> {
 	throws VisitException {
 	return env.get(exp.getVar());
     }
+	    public Double visitExpComparison(ExpComparison exp, Environment<Double> env)
+	throws VisitException {
+	Double left = exp.getLeft().visit(this, env);
+	Double right = exp.getRight().visit(this, env);
+	boolean result = exp.getComparator().apply(left, right);
+	return result ? 1.0 : 0.0;
+    }
+
+    public Double visitExpIf(ExpIf exp, Environment<Double> env)
+	throws VisitException {
+	
+	Double predResult = exp.getPredicate().visit(this, env);
+
+	if (predResult != 0.0) {
+	    return exp.getConsequent().visit(this, env);
+	}
+	
+	for (ConditionalClause clause : exp.getElifClauses()) {
+	    Double clausePred = clause.getPredicate().visit(this, env);
+	    if (clausePred != 0.0) {
+		return clause.getConsequent().visit(this, env);
+	    }
+	}
+	if (exp.getAlternative() != null) {
+	    return exp.getAlternative().visit(this, env);
+	}
+	return 0.0;
+    }
+
 }

@@ -90,7 +90,7 @@ alphanum = {alpha}|[0-9]
 <YYINITIAL>    "!="    {return new Symbol(sym.COMPARISON, Cmp.NE);}
 <YYINITIAL>    "<"     {return new Symbol(sym.COMPARISON, Cmp.LT);}
 <YYINITIAL>    ">"     {return new Symbol(sym.COMPARISON, Cmp.GT);}
-<YYINITIAL>    "="     {return new Symbol(sym.COMPARISON, Cmp.EQ);}
+
 
 <YYINITIAL>    [0-9]+ {  
 	       // INTEGER
