@@ -3,7 +3,7 @@ public enum Cmp {
 	public boolean apply(double arg1, double arg2) {
 	    return arg1 < arg2;
 	}
-    },
+    }, 
 
     LE("<=") {
 	public boolean apply(double arg1, double arg2) {

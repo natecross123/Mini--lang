@@ -22,7 +22,7 @@ public interface Visitor<S, T> extends ASTVisitor<S, T> {
 
     public T visitStmtFunDefn(StmtFunDefn fd, S arg) throws VisitException;
     public T visitExpFunCall(ExpFunCall fc, S arg) throws VisitException;
-
+  
     // expressions
     public T visitExpAdd(ExpAdd exp, S arg) throws VisitException ;
     public T visitExpSub(ExpSub exp, S arg) throws VisitException;
@@ -31,4 +31,6 @@ public interface Visitor<S, T> extends ASTVisitor<S, T> {
     public T visitExpMod(ExpMod exp, S arg) throws VisitException;
     public T visitExpLit(ExpLit exp, S arg) throws VisitException;
     public T visitExpVar(ExpVar exp, S arg) throws VisitException;
+    public T visitExpComparison(ExpComparison exp, S arg) throws VisitException;
+    public T visitExpIf(ExpIf exp, S arg) throws VisitException;
 }

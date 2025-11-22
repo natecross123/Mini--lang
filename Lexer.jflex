@@ -69,6 +69,7 @@ alphanum = {alpha}|[0-9]
 <YYINITIAL>	"/"	{return new Symbol(sym.DIV);}
 <YYINITIAL>	"%"	{return new Symbol(sym.MOD);}
 
+<YYINITIAL>	"fun" {return new Symbol(sym.FUN);}
 <YYINITIAL>	":="	{return new Symbol(sym.ASSIGN);}
 <YYINITIAL>	"("	{return new Symbol(sym.LPAREN);}
 <YYINITIAL>	")"	{return new Symbol(sym.RPAREN);}
@@ -78,7 +79,20 @@ alphanum = {alpha}|[0-9]
 <YYINITIAL>	"{"	{return new Symbol(sym.LBRACE);}
 <YYINITIAL>	"}"	{return new Symbol(sym.RBRACE);}
 
-<YYINITIAL>    [0-9]+ {
+<YYINITIAL>    "if"    {return new Symbol(sym.IF);}
+<YYINITIAL>    "elif"  {return new Symbol(sym.ELIF);}
+<YYINITIAL>    "else"  {return new Symbol(sym.ELSE);}
+<YYINITIAL>    "end"   {return new Symbol(sym.END);}
+<YYINITIAL>    ":"     {return new Symbol(sym.COLON);}
+
+<YYINITIAL>    "<="    {return new Symbol(sym.COMPARISON, Cmp.LE);}
+<YYINITIAL>    ">="    {return new Symbol(sym.COMPARISON, Cmp.GE);}
+<YYINITIAL>    "!="    {return new Symbol(sym.COMPARISON, Cmp.NE);}
+<YYINITIAL>    "<"     {return new Symbol(sym.COMPARISON, Cmp.LT);}
+<YYINITIAL>    ">"     {return new Symbol(sym.COMPARISON, Cmp.GT);}
+<YYINITIAL>    "="     {return new Symbol(sym.COMPARISON, Cmp.EQ);}
+
+<YYINITIAL>    [0-9]+ {  
 	       // INTEGER
 	       return new Symbol(sym.INT, 
 				 Integer.parseInt(yytext()));

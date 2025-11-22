@@ -65,13 +65,28 @@ public class Evaluator implements Visitor<Environment<Double>, Double> {
     public Double visitStmtFunDefn(StmtFunDefn fd, Environment<Double> env)
 	throws VisitException {
 	// to be implemented
+	Closure<Double> closure = new Closure<>(fd, env);
+	env.putFunction(fd.getName(), closure);
 	return 0D;
     }
 
     public Double visitExpFunCall(ExpFunCall fc, Environment<Double> env)
 	throws VisitException {
 	// to be implemented
-	return 0D;
+
+	Closure<Double> closure = env.getFunction(fc.getName());
+	StmtFunDefn function = closure.getFunction();
+
+	ArrayList<Double> argVals = new ArrayList<>();
+	for (Exp arg : fc.getArgs()) {
+	    argVals.add(arg.visit(this, env));
+	
+	Environment<Double> localEnv = new Environment<>(
+	    closure.getClosingEnv(),
+	    function.getParams(),
+	    argVals
+	);
+	return function.getBody().visit(this, localEnv);
     }
 
     public Double visitExpAdd(ExpAdd exp, Environment<Double> env)

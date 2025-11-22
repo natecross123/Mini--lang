@@ -26,7 +26,7 @@ parser code {:
 	    :};
 
 init with {:
-	  :};
+	  :};  
 
 scan with {:
 		try {
@@ -42,10 +42,11 @@ scan with {:
 
 /* Terminals (tokens returned by the scanner). */
 // keywords
-terminal FUN;
+terminal FUN, IF, ELIF, ELSE,END;
+terminal Cmp COMPARISON;
 
 // special symbols
-terminal LPAREN, RPAREN, SEMI;
+terminal LPAREN, RPAREN, SEMI,COLON;
 terminal LBRACE, RBRACE, COMMA, EQUAL;
 
 // arithmetic operators
@@ -60,17 +61,24 @@ non terminal ArithProgram program;
 non terminal StmtSequence stmtList;
 non terminal Statement stmt;
 non terminal StmtDefinition definition;
+non terminal ArrayList<Exp> argList;
+non terminal ArrayList<Exp> argListE;
+non terminal ConditionalClause conditionalClause;
+non terminal Exp  LogicalExpr;
+non terminal ExpIf ifExpr;
+non terminal ArrayList<ConditionalClause> elifClauses;
 
 /* ** Fix these declarations ** */
-non terminal funDefn;
-non terminal paramList;
-non terminal paramListE;
+non terminal StmtFunDefn funDefn;
+non terminal ArrayList<String> paramList;
+non terminal ArrayList<String> paramListE;
 /* **** */
 
 non terminal Exp expression;
 non terminal Exp term;
 non terminal Exp factor;
 non terminal empty;
+non terminal Exp elseClauseOpt;
 
 /* Grammar rules */
 
@@ -88,11 +96,20 @@ stmt ::= definition:d {: RESULT = d; :} |
 	 expression:e {: RESULT = new Statement(e); :} SEMI;
 
 
-funDefn ::= FUN VAR ;  /* complete this */
+funDefn ::= FUN VAR:name LPAREN paramListE:params RPAREN EQUALS expression:body SEMI
+            {: RESULT = new StmtFunDefn(name, params, body); :} |
+            FUN VAR:name LPAREN paramListE:params RPAREN LBRACE stmtList:body RBRACE
+            {: RESULT = new StmtFunDefn(name, params, body); :};  /* complete this */
 
-paramList ::= ;  /* complete this */
+paramList ::= VAR:id 
+              {: ArrayList<String> lst = new ArrayList<>(); 
+                 lst.add(id); 
+                 RESULT = lst; :} |
+              paramList:lst COMMA VAR:id
+              {: lst.add(id); RESULT = lst; :}; 
 
-paramListE ::= paramList | empty;
+paramListE ::= paramList:lst {: RESULT = lst; :} |
+               empty {: RESULT = new ArrayList<String>(); :};
 
 definition ::= VAR:v ASSIGN expression:e SEMI {:
 		   RESULT = new StmtDefinition(v, e);
@@ -102,7 +119,8 @@ expression ::= 	expression:e PLUS term:t {:
 			RESULT = new ExpAdd(e, t); :} |
 		expression:e MINUS term:t {:
 			RESULT = new ExpSub(e, t); :} |
-		term:t {: RESULT = t; :};
+		term:t {: RESULT = t; :};|
+		ifExpr:i {: RESULT = i; :};
 
 term ::= term:t MUL factor:f {:
 		RESULT = new ExpMul(t, f); :} |
@@ -115,5 +133,41 @@ term ::= term:t MUL factor:f {:
 factor ::= INT:ilit {: RESULT = new ExpLit(ilit); :} |
 	   VAR:var {: RESULT = new ExpVar(var); :} |
 	   LPAREN expression:e RPAREN {: RESULT = e; :}	;
+
+argList ::= expression:e
+	{: ArrayList<Exp> lst = new ArrayList<>();
+		lst.add(e);
+		RESULT = lst; :} |
+	argList:lst COMMA expression:e
+	{: lst.add(e); RESULT = lst; :};
+
+argListE ::= argList:lst {: RESULT = lst; :} |
+			empty {: RESULT = new ArrayList<Exp>(); :};
+
+LogicalExpr ::= expresion:e1 COMPARISON:cmp expression:e2 {:
+			RESULT = new ExpComparisson(cmp,e1,e2); :}|
+			expression:e1 EQUAL:eq expression:e2{:
+			RESULT = new ExpComparison(Cmp.EQ, e1, e2); :};
+
+ifExpr ::=  IF LogicalExpr:pred COLON expression:cons elifClauses:elifs ELSE expression:alt END{:
+			RESULT = new ExpIf(pred, cons, elifs, alt); :} |
+		IF logicalExpr:pred COLON expression:cons elifClauses:elifs END {:
+            RESULT = new ExpIf(pred, cons, elifs, null); :} |
+        IF logicalExpr:pred COLON expression:cons ELSE expression:alt END {:
+            RESULT = new ExpIf(pred, cons, new ArrayList<ConditionalClause>(), alt); :} |
+        IF logicalExpr:pred COLON expression:cons END {:
+            RESULT = new ExpIf(pred, cons, new ArrayList<ConditionalClause>(), null); :};
+			
+
+elifClauses ::= elifClauses:lst conditionalClause:c{:
+		lst.add(c);
+		RESULT = lst;
+		:} |
+
+conditionalClause ::= ELIF logicalExpr:pred COLON expression:cons {:
+            RESULT = new ConditionalClause(pred, cons); :};
+
+elseClauseOpt ::= ELSE expression:e {: RESULT = e; :} |
+		  empty {: RESULT = null; :};
 
 empty ::= ;
