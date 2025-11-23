@@ -9,7 +9,7 @@ public class Evaluator implements Visitor<Environment<Double>, Double> {
        implementation. */
 
     // allocate state here
-    protected Double result;	// result of evaluation
+    protected Double result;	
     private Double defaultValue;
     private Class<Double> myClass;
 

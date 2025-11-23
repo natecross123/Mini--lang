@@ -10,7 +10,7 @@ public class ExpComparison extends Exp {
     
     public Cmp getComparator() { 
         return comparator; 
-    }
+    } 
     
     public Exp getLeft() { 
         return getSubTree(0); 

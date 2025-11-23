@@ -100,7 +100,7 @@ stmt ::= definition:d {: RESULT = d; :} |
 	 funDefn:f {: RESULT = f; :} |
 	 expression:e SEMI {: RESULT = new Statement(e); :};
 
-/* Function definitions */
+
 funDefn ::= FUN VAR:name LPAREN paramListE:params RPAREN EQUAL expression:body SEMI {:
 		RESULT = new StmtFunDefn(name, params, body);
 	    :} |
@@ -121,7 +121,7 @@ paramList ::= VAR:id {:
 paramListE ::= paramList:lst {: RESULT = lst; :} |
 	       empty {: RESULT = new ArrayList<String>(); :};
 
-/* Variable definitions */
+
 definition ::= VAR:v ASSIGN expression:e SEMI {:
 		   RESULT = new StmtDefinition(v, e);
 		:};
@@ -131,9 +131,8 @@ expression ::= 	expression:e PLUS term:t {:
 			RESULT = new ExpAdd(e, t); :} |
 		expression:e MINUS term:t {:
 			RESULT = new ExpSub(e, t); :} |
-		term:t {: RESULT = t; :} |
-		ifExpr:i {: RESULT = i; :};
-
+		term:t {: RESULT = t; :};
+		
 term ::= term:t MUL factor:f {:
 		RESULT = new ExpMul(t, f); :} |
 	 term:t DIV factor:f {:
@@ -146,9 +145,10 @@ factor ::= INT:ilit {: RESULT = new ExpLit(ilit); :} |
 	   VAR:var LPAREN argListE:args RPAREN {: 
 	       RESULT = new ExpFunCall(var, args); :} |
 	   VAR:var {: RESULT = new ExpVar(var); :} |
-	   LPAREN expression:e RPAREN {: RESULT = e; :};
+	   LPAREN expression:e RPAREN {: RESULT = e; :}|
+	   ifExpr:i {: RESULT = i; :};
 
-/* Function call arguments */
+
 argList ::= expression:e {:
 		ArrayList<Exp> lst = new ArrayList<>();
 		lst.add(e);
@@ -162,7 +162,6 @@ argList ::= expression:e {:
 argListE ::= argList:lst {: RESULT = lst; :} |
 	     empty {: RESULT = new ArrayList<Exp>(); :};
 
-/* Logical expressions */
 logicalExpr ::= expression:e1 COMPARISON:cmp expression:e2 {:
 		    RESULT = new ExpComparison(cmp, e1, e2);
 		:} |
@@ -170,7 +169,6 @@ logicalExpr ::= expression:e1 COMPARISON:cmp expression:e2 {:
 		    RESULT = new ExpComparison(Cmp.EQ, e1, e2);
 		:};
 
-/* If expressions */
 ifExpr ::= IF logicalExpr:pred COLON expression:cons elifClausesOpt:elifs elseClauseOpt:alt END {:
 	       RESULT = new ExpIf(pred, cons, elifs, alt);
 	   :};
